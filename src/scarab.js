@@ -12,7 +12,7 @@ var MapzenScarab = (function () {
 
   var DEFAULT_LINK = 'https://mapzen.com/'
   var TRACKING_CATEGORY = 'demo'
-  var ANALYTICS_PROPERTY_ID = 'UA-47035811-1'
+  // var ANALYTICS_PROPERTY_ID = 'UA-47035811-1'
 
   // Globals
   var opts
@@ -24,28 +24,6 @@ var MapzenScarab = (function () {
     // opts.description Information about map
 
   var infoDescriptionEl
-
-  function _track (action, label, value, nonInteraction) {
-    if (opts.analytics === false) return false
-
-    if (typeof ga === 'undefined') {
-      return false
-    }
-
-    ga('send', 'event', TRACKING_CATEGORY, action, label, value, nonInteraction)
-  }
-
-  function _loadAnalytics () {
-    /* eslint-disable */
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', ANALYTICS_PROPERTY_ID, 'auto');
-    ga('send', 'pageview');
-    /* eslint-enable */
-  }
 
   function _popupWindow (url, title, w, h) {
     // Borrowed from rrssb
@@ -76,9 +54,9 @@ var MapzenScarab = (function () {
     if (opts.tweet) {
       text = encodeURIComponent(opts.tweet)
     } else if (opts.name) {
-      text = encodeURIComponent(opts.name + ', powered by @mapzen')
+      text = encodeURIComponent(opts.name)
     } else {
-      text = encodeURIComponent('Check out this project by @mapzen!')
+      text = encodeURIComponent('Check out this project!')
     }
 
     params = '?text=' + text + '&url=' + url
@@ -93,7 +71,7 @@ var MapzenScarab = (function () {
 
   function _createElsAndAppend () {
     var mapzenLink = opts.link || DEFAULT_LINK
-    var mapzenTitle = (opts.name) ? opts.name + ' · Powered by Mapzen' : 'Powered by Mapzen'
+    var mapzenTitle = (opts.name) ? opts.name : ''
     var el = document.createElement('div')
 
     // Create container
@@ -102,12 +80,12 @@ var MapzenScarab = (function () {
     el.setAttribute('role', 'widget')
 
     // Create buttons
-    var mapzenEl = _createButtonEl('mapzen', mapzenLink, mapzenTitle, _onClickMapzen)
+    // var mapzenEl = _createButtonEl('mapzen', mapzenLink, mapzenTitle, _onClickMapzen)
     var twitterEl = _createButtonEl('twitter', _buildTwitterLink(), 'Share this on Twitter', _onClickTwitter)
     var facebookEl = _createButtonEl('facebook', _buildFacebookLink(), 'Share this on Facebook', _onClickFacebook)
 
     // Build DOM
-    el.appendChild(mapzenEl)
+    // el.appendChild(mapzenEl)
     el.appendChild(twitterEl)
     el.appendChild(facebookEl)
 
@@ -156,25 +134,25 @@ var MapzenScarab = (function () {
   }
 
   function _onClickMapzen (event) {
-    _track('click', 'mapzen logo', opts.name)
+    // _track('click', 'mapzen logo', opts.name)
   }
 
   function _onClickTwitter (event) {
     event.preventDefault()
     var link = _buildTwitterLink()
     _popupWindow(link, 'Twitter', 580, 470)
-    _track('click', 'twitter', opts.name)
+    // _track('click', 'twitter', opts.name)
   }
 
   function _onClickFacebook (event) {
     event.preventDefault()
     var link = _buildFacebookLink()
     _popupWindow(link, 'Facebook', 580, 470)
-    _track('click', 'facebook', opts.name)
+    // _track('click', 'facebook', opts.name)
   }
 
   function _onClickGitHub (event) {
-    _track('click', 'github', opts.name)
+    // _track('click', 'github', opts.name)
   }
 
   // Clicking info button should lead to pop up description to open up
@@ -246,16 +224,6 @@ var MapzenScarab = (function () {
         resizeDescription(this.el)
       }.bind(this))
     }
-
-    // Check if Google Analytics is present soon in the future; if not, load it.
-    window.setTimeout(function () {
-      if (typeof ga === 'undefined') {
-        _loadAnalytics()
-        _track('analytics', 'fallback', null, true)
-      }
-
-      _track('bug', 'active', opts.name, true)
-    }, 0)
   }
 
   MapzenScarab.prototype.rebuildLinks = function () {
